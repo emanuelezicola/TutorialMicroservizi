@@ -31,13 +31,13 @@ public class MovieCatalogController {
         log.info("Invoked method MovieCatalogController::getCatalog. Retrieving users catalog.");
 
         //get all rated movie IDs
-        UserRating userRatings = restTemplate.getForObject("http://localhost:8083/ratings/user/" + userId, UserRating.class);
+        UserRating userRatings = restTemplate.getForObject("http://ratings/ratings/user/" + userId, UserRating.class);
         if (Objects.isNull(userRatings) || Objects.isNull(userRatings.getUserRatings())) {
             throw new EntityNotFoundException("No ratings found with for user with id: " + userId);
         }
 
         return userRatings.getUserRatings().stream().map(ratingItem -> {
-            Movie movie = restTemplate.getForObject("http://localhost:8082/movie/", Movie.class);
+            Movie movie = restTemplate.getForObject("http://movie-info/movie/" + ratingItem.getMovieId(), Movie.class);
             if (Objects.isNull(movie)) {
                 throw new EntityNotFoundException("No movie found with id: " + ratingItem.getMovieId());
             }
